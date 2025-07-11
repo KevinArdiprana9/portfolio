@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef } from "react";
+import Navbar from "./Navbar";
+import Hero from "./sections/Hero";
+import About from "./sections/About";
+import Projects from "./sections/Projects";
+import projectData from "./data/Project";
+import Contact from "./sections/Contact";
+import Footer from "./sections/Footer";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const aboutRef = useRef<HTMLDivElement | null>(null);
+  const projectsRef = useRef<HTMLDivElement | null>(null);
+  const contactRef = useRef<HTMLDivElement | null>(null);
+
+  const handleNavClick = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (ref.current) {
+      const offset = 50;
+      const top = ref.current.offsetTop - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="bg-[#0f172a] text-white min-h-screen font-sans">
+      <Navbar onNavClick={handleNavClick} refs={{ heroRef, aboutRef, projectsRef, contactRef }} />
+      <div ref={heroRef}>
+        <Hero onScrollToAbout={() => handleNavClick(aboutRef)}/>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div ref={aboutRef}>
+        <About />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div ref={projectsRef}>
+        <Projects projects={projectData} />
+      </div>
+      <div ref={contactRef}>
+        <Contact />
+      </div>
+      <Footer />
+    </div>
+  );
 }
 
-export default App
+export default App;
